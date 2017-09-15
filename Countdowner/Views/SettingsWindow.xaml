@@ -1,0 +1,46 @@
+﻿<controls:MetroWindow x:Class="Countdowner.Views.SettingsWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:viewModels="clr-namespace:Countdowner.ViewModels"
+                      Icon="../Resources/clock.png" IsWindowDraggable="False"
+                      WindowStyle="ToolWindow" Width="300" Height="225"
+                      mc:Ignorable="d" WindowStartupLocation="CenterOwner"
+                      Title="SettingsWindow" ResizeMode="NoResize"
+                      x:Name="MetroWindow" BorderThickness="1"
+                      BorderBrush="{Binding ElementName=MetroWindow, Path=WindowTitleBrush}">
+    <controls:MetroWindow.DataContext>
+        <viewModels:SettingsWindowViewModel />
+    </controls:MetroWindow.DataContext>
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.Column="0" Content="Last Day:" />
+        <controls:DateTimePicker Grid.Row="0" Grid.Column="1" Height="20"
+                                 FirstDayOfWeek="Monday" Culture="de-DE"
+                                 SelectedDate="{Binding LastDay}" />
+        <Label Grid.Row="1" Grid.Column="0" Content="Include weekend:" />
+        <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding IncludeWeekend}" />
+        <Label Grid.Row="2" Grid.Column="0" Content="Accent:" />
+        <ComboBox Grid.Row="2" Grid.Column="1" Height="20"
+                  ItemsSource="{Binding Accents}" SelectedItem="{Binding SelectedAccent}" />
+        <Label Grid.Row="3" Grid.Column="0" Content="Theme:" />
+        <ComboBox Grid.Row="3" Grid.Column="1" Height="20"
+                  ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" />
+        <Button Grid.Row="4" Grid.Column="1" Content="Save"
+                VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                Command="{Binding SaveCommand}" x:Name="ButtonOk" Click="ButtonOk_OnClick" />
+    </Grid>
+</controls:MetroWindow>

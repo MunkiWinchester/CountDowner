@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Countdowner.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LastDay" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2017-09-15</Value>
+    </Setting>
+    <Setting Name="IncludeWeekend" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SelectedAccent" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Crimson</Value>
+    </Setting>
+    <Setting Name="SelectedTheme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BaseDark</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

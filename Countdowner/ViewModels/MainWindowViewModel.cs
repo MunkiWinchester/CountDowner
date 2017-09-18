@@ -79,10 +79,12 @@ namespace Countdowner.ViewModels
 
         public ICommand SettingsClickedCommand => new RelayCommand<MainWindow>(OpenSettings);
 
-        private static void OpenSettings(MainWindow mainWindow)
+        private void OpenSettings(MainWindow mainWindow)
         {
             var settings = new SettingsWindow {Owner = mainWindow};
-            settings.ShowDialog();
+            var result = settings.ShowDialog();
+            if (result != null && result == true)
+                CheckTimer();
         }
 
         /// <summary>
@@ -92,6 +94,11 @@ namespace Countdowner.ViewModels
         /// <param name="e">The elapsed event</param>
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            CheckTimer();
+        }
+
+        private void CheckTimer()
+        {
             var ts = Settings.Default.LastDay - DateTime.Now;
             if (!Settings.Default.IncludeWeekend && ts.Days / 7 > 0)
                 ts = ts.Subtract(TimeSpan.FromDays(ts.Days / 7 * 2));
@@ -100,9 +107,17 @@ namespace Countdowner.ViewModels
             TimeLeftHours = ts.Hours;
             TimeLeftMinutes = ts.Minutes;
             TimeLeftSeconds = ts.Seconds;
-            if (ts == TimeSpan.Zero)
+
+            if (ts.Days == 0 & ts.Hours == 0 & ts.Minutes == 0 & ts.Seconds == 0)
+            {
+                _timer.Enabled = false;
                 IsDone = true;
-            //TimeLeft = string.Format("{0:%d} days\r\n{0:%h} hours\r\n{0:%m} minutes\r\n{0:%s} seconds", ts);
+            }
+            else
+            {
+                _timer.Enabled = true;
+                IsDone = false;
+            }
         }
     }
 }

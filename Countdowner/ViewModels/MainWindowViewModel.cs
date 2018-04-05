@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Timers;
 using System.Windows.Input;
 using Countdowner.Properties;
 using Countdowner.Views;
+using PublicHoliday;
 using WpfUtility;
 
 namespace Countdowner.ViewModels
@@ -10,11 +12,13 @@ namespace Countdowner.ViewModels
     public class MainWindowViewModel : ObservableObject
     {
         /// <summary>
-        ///     Contains the timer
+        /// Contains the timer
         /// </summary>
         private readonly Timer _timer = new Timer(TimeSpan.FromSeconds(1).TotalMilliseconds);
 
         private bool _isDone;
+
+        private TimeSpan _publicHolidaysSpan;
 
         private int _timeLeftDays;
         private int _timeLeftHours;
@@ -25,6 +29,7 @@ namespace Countdowner.ViewModels
         {
             _timer.Elapsed += Timer_Elapsed;
             _timer.Enabled = true;
+            CalculateHolidays();
         }
 
         public int TimeLeftDays
@@ -84,11 +89,14 @@ namespace Countdowner.ViewModels
             var settings = new SettingsWindow {Owner = mainWindow};
             var result = settings.ShowDialog();
             if (result != null && result == true)
+            {
+                CalculateHolidays();
                 CheckTimer();
+            }
         }
 
         /// <summary>
-        ///     Occurs when the timer elapsed
+        /// Occurs when the timer elapsed
         /// </summary>
         /// <param name="sender">The sender</param>
         /// <param name="e">The elapsed event</param>
@@ -97,19 +105,36 @@ namespace Countdowner.ViewModels
             CheckTimer();
         }
 
+        private void CalculateHolidays()
+        {
+            var calendar = new GermanPublicHoliday {State = GermanPublicHoliday.States.NI};
+            var publicHolidays = calendar.PublicHolidays(DateTime.Now.Year).ToList();
+
+            var days = publicHolidays.Where(p => p >= DateTime.Now && p <= Settings.Default.LastDay).ToList();
+            var totalTimeSpan = new TimeSpan();
+            _publicHolidaysSpan = totalTimeSpan.Add(TimeSpan.FromDays(days.Count));
+        }
+
         private void CheckTimer()
         {
             var ts = Settings.Default.LastDay - DateTime.Now;
+
             if (!Settings.Default.IncludeWeekend && ts.Days / 7 > 0)
                 ts = ts.Subtract(TimeSpan.FromDays(ts.Days / 7 * 2));
+
+            if (!Settings.Default.IncludeHolidays)
+                ts = ts.Subtract(_publicHolidaysSpan);
+
+            ts = ts.Subtract(TimeSpan.FromDays(Settings.Default.RemainingVacation));
 
             TimeLeftDays = ts.Days;
             TimeLeftHours = ts.Hours;
             TimeLeftMinutes = ts.Minutes;
             TimeLeftSeconds = ts.Seconds;
 
-            if (ts.Days == 0 & ts.Hours == 0 & ts.Minutes == 0 & ts.Seconds == 0)
+            if ((ts.Days == 0) & (ts.Hours == 0) & (ts.Minutes == 0) & (ts.Seconds == 0))
             {
+                _timer.Stop();
                 _timer.Enabled = false;
                 IsDone = true;
             }

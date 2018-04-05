@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="LastDay" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)">2017-09-15</Value>
+      <Value Profile="(Default)">2018-06-30</Value>
     </Setting>
     <Setting Name="IncludeWeekend" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -13,6 +13,30 @@
     </Setting>
     <Setting Name="SelectedTheme" Type="System.String" Scope="User">
       <Value Profile="(Default)">BaseDark</Value>
+    </Setting>
+    <Setting Name="Top" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="Left" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="IsAlwaysOnTop" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="IncludeHolidays" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SelectedState" Type="System.String" Scope="User">
+      <Value Profile="(Default)">NI</Value>
+    </Setting>
+    <Setting Name="Width" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="Height" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">200</Value>
+    </Setting>
+    <Setting Name="RemainingVacation" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

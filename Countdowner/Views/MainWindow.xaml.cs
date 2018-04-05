@@ -6,11 +6,16 @@ using MahApps.Metro;
 
 namespace Countdowner.Views
 {
+    /// <inheritdoc cref="Window" />
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow
     {
+        /// <inheritdoc />
+        /// <summary>
+        /// Public constructor, sets the position and size of the window
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
@@ -21,6 +26,13 @@ namespace Countdowner.Views
             Height = Settings.Default.Height;
         }
 
+        /// <summary>
+        /// Event which occurs when the window is loaded
+        /// <para />
+        /// The method body sets the theme and accent of the window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             Settings.Default.SelectedAccent = string.IsNullOrWhiteSpace(Settings.Default.SelectedAccent)
@@ -45,6 +57,13 @@ namespace Countdowner.Views
             }
         }
 
+        /// <summary>
+        /// Event which occurs when the window is closed
+        /// <para />
+        /// The method body saves the size and position of the window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_OnClosing(object sender, CancelEventArgs e)
         {
             Settings.Default.Top = Top;
@@ -54,6 +73,13 @@ namespace Countdowner.Views
             Settings.Default.Save();
         }
 
+        /// <summary>
+        /// Event which occurs when the window is deactivated
+        /// <para />
+        /// The method body sets the window to the top most if it should be
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_OnDeactivated(object sender, EventArgs e)
         {
             var window = (Window) sender;

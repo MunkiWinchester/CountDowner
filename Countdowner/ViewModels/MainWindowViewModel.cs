@@ -9,6 +9,9 @@ using WpfUtility;
 
 namespace Countdowner.ViewModels
 {
+    /// <summary>
+    /// View model for the the main window
+    /// </summary>
     public class MainWindowViewModel : ObservableObject
     {
         /// <summary>
@@ -16,15 +19,39 @@ namespace Countdowner.ViewModels
         /// </summary>
         private readonly Timer _timer = new Timer(TimeSpan.FromSeconds(1).TotalMilliseconds);
 
+        /// <summary>
+        /// Boolean to display wheter the countdown is expired or not
+        /// </summary>
         private bool _isDone;
 
+        /// <summary>
+        /// The timespan for the public holidays between <see langword="DateTime.Now" /> and the "last day"
+        /// </summary>
         private TimeSpan _publicHolidaysSpan;
 
+        /// <summary>
+        /// The remaining days
+        /// </summary>
         private int _timeLeftDays;
+
+        /// <summary>
+        /// The remaining hours
+        /// </summary>
         private int _timeLeftHours;
+
+        /// <summary>
+        /// The remaining minutes
+        /// </summary>
         private int _timeLeftMinutes;
+
+        /// <summary>
+        /// The remaining seconds
+        /// </summary>
         private int _timeLeftSeconds;
 
+        /// <summary>
+        /// Public constructor
+        /// </summary>
         public MainWindowViewModel()
         {
             _timer.Elapsed += Timer_Elapsed;
@@ -32,6 +59,9 @@ namespace Countdowner.ViewModels
             CalculateHolidays();
         }
 
+        /// <summary>
+        /// The remaining days
+        /// </summary>
         public int TimeLeftDays
         {
             get => _timeLeftDays;
@@ -42,6 +72,9 @@ namespace Countdowner.ViewModels
             }
         }
 
+        /// <summary>
+        /// The remaining hours
+        /// </summary>
         public int TimeLeftHours
         {
             get => _timeLeftHours;
@@ -52,6 +85,9 @@ namespace Countdowner.ViewModels
             }
         }
 
+        /// <summary>
+        /// The remaining minutes
+        /// </summary>
         public int TimeLeftMinutes
         {
             get => _timeLeftMinutes;
@@ -62,6 +98,9 @@ namespace Countdowner.ViewModels
             }
         }
 
+        /// <summary>
+        /// The remaining seconds
+        /// </summary>
         public int TimeLeftSeconds
         {
             get => _timeLeftSeconds;
@@ -72,6 +111,9 @@ namespace Countdowner.ViewModels
             }
         }
 
+        /// <summary>
+        /// Boolean to display wheter the countdown is expired or not
+        /// </summary>
         public bool IsDone
         {
             get => _isDone;
@@ -82,8 +124,15 @@ namespace Countdowner.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command to open the settings window
+        /// </summary>
         public ICommand SettingsClickedCommand => new RelayCommand<MainWindow>(OpenSettings);
 
+        /// <summary>
+        /// Method to open the setting window
+        /// </summary>
+        /// <param name="mainWindow"></param>
         private void OpenSettings(MainWindow mainWindow)
         {
             var settings = new SettingsWindow {Owner = mainWindow};
@@ -91,23 +140,35 @@ namespace Countdowner.ViewModels
             if (result != null && result == true)
             {
                 CalculateHolidays();
-                CheckTimer();
+                CalculateTimer();
             }
         }
 
         /// <summary>
-        /// Occurs when the timer elapsed
+        /// Occurs when the timer elapses
         /// </summary>
         /// <param name="sender">The sender</param>
         /// <param name="e">The elapsed event</param>
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            CheckTimer();
+            CalculateTimer();
         }
 
+        /// <summary>
+        /// Calculates the timespan of all public holidays for the selected german state
+        /// between <see langword="DateTime.Now" /> and the "last day" and sets it in the
+        /// <see langword="_publicHolidaysSpan" />-property
+        /// <para />
+        /// Currently just works for the actual year..
+        /// </summary>
         private void CalculateHolidays()
         {
-            var calendar = new GermanPublicHoliday {State = GermanPublicHoliday.States.NI};
+            var calendar = new GermanPublicHoliday
+            {
+                State = ((GermanPublicHoliday.States[]) Enum.GetValues(typeof(GermanPublicHoliday.States)))
+                    .FirstOrDefault(x => x.ToString().Equals(Settings.Default.SelectedState))
+            };
+            // TODO: handle more than the actual year?
             var publicHolidays = calendar.PublicHolidays(DateTime.Now.Year).ToList();
 
             var days = publicHolidays.Where(p => p >= DateTime.Now && p <= Settings.Default.LastDay).ToList();
@@ -115,7 +176,10 @@ namespace Countdowner.ViewModels
             _publicHolidaysSpan = totalTimeSpan.Add(TimeSpan.FromDays(days.Count));
         }
 
-        private void CheckTimer()
+        /// <summary>
+        /// Calculates the remaining time and sets the corresponding properties
+        /// </summary>
+        private void CalculateTimer()
         {
             var ts = Settings.Default.LastDay - DateTime.Now;
 
@@ -132,7 +196,7 @@ namespace Countdowner.ViewModels
             TimeLeftMinutes = ts.Minutes;
             TimeLeftSeconds = ts.Seconds;
 
-            if ((ts.Days == 0) & (ts.Hours == 0) & (ts.Minutes == 0) & (ts.Seconds == 0))
+            if (ts.Days == 0 && ts.Hours == 0 && ts.Minutes == 0 && ts.Seconds == 0)
             {
                 _timer.Stop();
                 _timer.Enabled = false;
